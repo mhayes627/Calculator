@@ -12,6 +12,7 @@ public class CalculatorController extends AbstractController{
 
     public static final String ELEMENT_TEXT1_PROPERTY = "Text1";
     public static final String ELEMENT_TEXT2_PROPERTY = "Text2";
+    public static final String ELEMENT_NEW_DIGIT = "NewDigit";
 
     /*
      * This is the change method which corresponds to ELEMENT_TEXT1_PROPERTY.
@@ -30,5 +31,9 @@ public class CalculatorController extends AbstractController{
 
     public void changeElementText2(String newText) {
         setModelProperty(ELEMENT_TEXT2_PROPERTY, newText);
+    }
+
+    public void appendNewDigit(String newDigit){
+        setModelProperty(ELEMENT_NEW_DIGIT, newDigit);
     }
 }

@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.beans.PropertyChangeEvent;
 
 import edu.jsu.mcis.cs408.calculator.databinding.ActivityMainBinding;
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
 
     int[][] horizontals = new int[KEYS_HEIGHT][KEYS_WIDTH];
     int[][] verticals = new int[KEYS_WIDTH][KEYS_HEIGHT];
+
+    TextView display;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
 
         /* Associate Click Handler with Input Buttons */
 
-        DefaultClickHandler click = new DefaultClickHandler();
+        CalculatorClickHandler click = new CalculatorClickHandler();
         ConstraintLayout layout = binding.layout;
 
         for (int i = 0; i < layout.getChildCount(); ++i) {
@@ -84,6 +88,13 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
 
 
         }
+        else if ( propertyName.equals(CalculatorController.ELEMENT_NEW_DIGIT) ) {
+
+            String oldPropertyValue = display.getText().toString();
+
+            display.setText(propertyValue);
+
+        }
 
         else if ( propertyName.equals(CalculatorController.ELEMENT_TEXT2_PROPERTY) ) {
 
@@ -93,26 +104,47 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
 
     }
 
-    class DefaultClickHandler implements View.OnClickListener {
+    class CalculatorClickHandler implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
+
+            String tag = v.getTag().toString();
+            Toast toast = Toast.makeText(binding.getRoot().getContext(), tag, Toast.LENGTH_SHORT);
+            toast.show();
 
             /*
              * When the "Change" buttons are clicked, inform the controller of an input field
              * change, so that the Model(s) can be updated accordingly.
              */
 
-            String tag = ((Button) v).getTag().toString();
+            tag = ((Button) v).getTag().toString();
 
-            if (tag.equals("inputButton1")) {
-            }
-
-            else if (tag.equals("inputButton2")) {
+            switch(tag){
+                case "btn1":
+                    controller.appendNewDigit(tag);
+                case "btn2":
+                case "btn3":
+                case "btn4":
+                case "btn5":
+                case "btn6":
+                case "btn7":
+                case "btn8":
+                case "btn9":
+                case "btn0":
+                case "btnPlus":
+                case "btnMinus":
+                case "btnMult":
+                case "btnDiv":
+                case "btnSqrt":
+                case "btnPerc":
+                case "btnDecimal":
+                case "btnSign":
+                case "btnClear":
+                case "btnEqual":
             }
 
         }
-
     }
 
     private void initLayout(){
@@ -120,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
         ConstraintSet set = new ConstraintSet();
 
         // adding TextView
-        TextView display = new TextView(this);
+        display = new TextView(this);
         display.setId(View.generateViewId());
         display.setTag(getResources().getString(R.string.display_tag));
         display.setGravity(Gravity.CENTER_VERTICAL | Gravity.END);

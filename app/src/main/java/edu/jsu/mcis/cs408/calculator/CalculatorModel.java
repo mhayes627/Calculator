@@ -12,8 +12,10 @@ public class CalculatorModel extends AbstractModel {
      * reflected in the View as an EditText field and a TextView label.
      */
 
-    private String leftOperand;
-    private String rightOperand;
+    private StringBuilder leftOperand;
+    private StringBuilder rightOperand;
+
+    private String digit;
 
     /*
      * Initialize the model elements to known default values.  We use the setter
@@ -24,22 +26,24 @@ public class CalculatorModel extends AbstractModel {
 
     public void initDefault() {
 
-        setText1("Sample Text 1");
-        setText2("Sample Text 2");
+
+
+        leftOperand = new StringBuilder();
+        rightOperand = new StringBuilder();
 
     }
 
     /*
      * Simple getter methods for text1 and text2
      */
-
-    public String getLeftOperand() {
-        return leftOperand;
-    }
-
-    public String getRightOperand() {
-        return rightOperand;
-    }
+//
+//    public String getLeftOperand() {
+//        return leftOperand;
+//    }
+//
+//    public String getRightOperand() {
+//        return rightOperand;
+//    }
 
     /*
      * Setters for text1 and text2.  Notice that, in addition to changing the
@@ -49,26 +53,14 @@ public class CalculatorModel extends AbstractModel {
      * they can update themselves accordingly.
      */
 
-    public void setText1(String newText) {
 
-        String oldText = this.leftOperand;
-        this.leftOperand = newText;
+    public void setNewDigit(String newDigit){
 
-        Log.i(TAG, "Text1 Change: From " + oldText + " to " + newText);
+        String oldDigit = this.digit;
 
-        firePropertyChange(CalculatorController.ELEMENT_TEXT1_PROPERTY, oldText, newText);
+        leftOperand.append(newDigit.charAt(0));
 
-    }
-
-    public void setText2(String newText) {
-
-        String oldText = this.rightOperand;
-        this.rightOperand = newText;
-
-        Log.i(TAG, "Text2 Change: From " + oldText + " to " + newText);
-
-        firePropertyChange(CalculatorController.ELEMENT_TEXT2_PROPERTY, oldText, newText);
-
+        firePropertyChange(CalculatorController.ELEMENT_NEW_DIGIT, oldDigit, newDigit);
     }
 
 }
