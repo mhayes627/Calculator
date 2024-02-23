@@ -92,6 +92,22 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
             }
 
         }
+        else if ( propertyName.equals(CalculatorController.ELEMENT_OPERATOR) ) {
+            String oldPropertyValue = display.getText().toString();
+
+            if (!oldPropertyValue.equals(propertyValue)){
+                display.setText(propertyValue);
+            }
+
+        }
+        else if ( propertyName.equals(CalculatorController.ELEMENT_VALUE) ) {
+            String oldPropertyValue = display.getText().toString();
+
+            if (!oldPropertyValue.equals(propertyValue)){
+                display.setText(propertyValue);
+            }
+
+        }
 
     }
 
@@ -141,26 +157,32 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
                 case "0":
                     controller.appendNewDigit(tag);
                     break;
-                case "btnPlus":
+                case "+":
+                    controller.useOperator(tag);
                     break;
-                case "btnMinus":
+                case "-":
+                    controller.useOperator(tag);
                     break;
-                case "btnMult":
+                case "\u00D7":
+                    controller.useOperator(tag);
                     break;
-                case "btnDiv":
+                case "\u00F7":
+                    controller.useOperator(tag);
                     break;
-                case "btnSqrt":
+                case "\u221A":
+                    controller.useOperator(tag);
                     break;
-                case "btnPerc":
-
+                case "%":
                     break;
-                case "btnDecimal":
+                case ".":
+                    controller.appendNewDigit(tag);
                     break;
-                case "btnSign":
+                case "\u00B1":
                     break;
-                case "btnClear":
+                case "C":
                     break;
-                case "btnEqual":
+                case "=":
+                    controller.calculate(tag);
                     break;
             }
 

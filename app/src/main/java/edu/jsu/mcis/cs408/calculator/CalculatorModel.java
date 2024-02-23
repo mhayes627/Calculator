@@ -14,8 +14,9 @@ public class CalculatorModel extends AbstractModel {
 
     private StringBuilder leftOperand;
     private StringBuilder rightOperand;
-
+    private String operator;
     private String digit;
+    private CalculatorState state;
 
     /*
      * Initialize the model elements to known default values.  We use the setter
@@ -25,6 +26,7 @@ public class CalculatorModel extends AbstractModel {
      */
 
     public void initDefault() {
+        state = CalculatorState.CLEAR;
         digit = "0";
 
         leftOperand = new StringBuilder();
@@ -57,12 +59,43 @@ public class CalculatorModel extends AbstractModel {
 
         String oldDigit = this.digit;
 
-        leftOperand = new StringBuilder(oldDigit);
-        leftOperand.append(newDigit);
+        if (state.equals(CalculatorState.CLEAR) || state.equals(CalculatorState.LHS)){
+            state = CalculatorState.LHS;
+            leftOperand = new StringBuilder(oldDigit);
+            leftOperand.append(newDigit);
 
-        this.digit = Integer.valueOf(leftOperand.toString()).toString();
+            this.digit = Integer.valueOf(leftOperand.toString()).toString();
+        }
+        else if (state.equals(CalculatorState.OP_SELECTED) || state.equals(CalculatorState.RHS)){
+            state = CalculatorState.RHS;
+            rightOperand = new StringBuilder(oldDigit);
+            rightOperand.append(newDigit);
+
+            this.digit = Integer.valueOf(rightOperand.toString()).toString();
+        }
 
         firePropertyChange(CalculatorController.ELEMENT_NEW_DIGIT, oldDigit, this.digit);
+    }
+
+    public void setOperator(String newOperator){
+        if (state.equals(CalculatorState.LHS)){
+            operator = newOperator;
+            state = CalculatorState.OP_SELECTED;
+            this.digit = "0";
+
+            firePropertyChange(CalculatorController.ELEMENT_OPERATOR, null, operator);
+        }
+
+    }
+
+    public void setValue(String value){
+        int operand1 = Integer.parseInt(leftOperand.toString());
+        int operand2 = Integer.parseInt(rightOperand.toString());
+
+        int result = operand1 + operand2;
+
+        firePropertyChange(CalculatorController.ELEMENT_VALUE, null, result);
+        state = CalculatorState.CLEAR;
     }
 
 }
