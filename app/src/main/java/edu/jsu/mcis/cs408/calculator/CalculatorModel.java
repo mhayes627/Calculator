@@ -25,8 +25,7 @@ public class CalculatorModel extends AbstractModel {
      */
 
     public void initDefault() {
-
-
+        digit = "0";
 
         leftOperand = new StringBuilder();
         rightOperand = new StringBuilder();
@@ -58,9 +57,12 @@ public class CalculatorModel extends AbstractModel {
 
         String oldDigit = this.digit;
 
-        leftOperand.append(newDigit.charAt(0));
+        leftOperand = new StringBuilder(oldDigit);
+        leftOperand.append(newDigit);
 
-        firePropertyChange(CalculatorController.ELEMENT_NEW_DIGIT, oldDigit, newDigit);
+        this.digit = Integer.valueOf(leftOperand.toString()).toString();
+
+        firePropertyChange(CalculatorController.ELEMENT_NEW_DIGIT, oldDigit, this.digit);
     }
 
 }

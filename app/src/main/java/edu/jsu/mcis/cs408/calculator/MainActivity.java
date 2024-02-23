@@ -83,22 +83,13 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
 
         Log.i(TAG, "New " + propertyName + " Value from Model: " + propertyValue);
 
-        if ( propertyName.equals(CalculatorController.ELEMENT_TEXT1_PROPERTY) ) {
-
-
-
-        }
-        else if ( propertyName.equals(CalculatorController.ELEMENT_NEW_DIGIT) ) {
+        if ( propertyName.equals(CalculatorController.ELEMENT_NEW_DIGIT) ) {
 
             String oldPropertyValue = display.getText().toString();
 
-            display.setText(propertyValue);
-
-        }
-
-        else if ( propertyName.equals(CalculatorController.ELEMENT_TEXT2_PROPERTY) ) {
-
-
+            if (!oldPropertyValue.equals(propertyValue)){
+                display.setText(propertyValue);
+            }
 
         }
 
@@ -117,31 +108,60 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
              * When the "Change" buttons are clicked, inform the controller of an input field
              * change, so that the Model(s) can be updated accordingly.
              */
-
             tag = ((Button) v).getTag().toString();
 
             switch(tag){
-                case "btn1":
+                case "1":
                     controller.appendNewDigit(tag);
-                case "btn2":
-                case "btn3":
-                case "btn4":
-                case "btn5":
-                case "btn6":
-                case "btn7":
-                case "btn8":
-                case "btn9":
-                case "btn0":
+                    break;
+                case "2":
+                    controller.appendNewDigit(tag);
+                    break;
+                case "3":
+                    controller.appendNewDigit(tag);
+                    break;
+                case "4":
+                    controller.appendNewDigit(tag);
+                    break;
+                case "5":
+                    controller.appendNewDigit(tag);
+                    break;
+                case "6":
+                    controller.appendNewDigit(tag);
+                    break;
+                case "7":
+                    controller.appendNewDigit(tag);
+                    break;
+                case "8":
+                    controller.appendNewDigit(tag);
+                    break;
+                case "9":
+                    controller.appendNewDigit(tag);
+                    break;
+                case "0":
+                    controller.appendNewDigit(tag);
+                    break;
                 case "btnPlus":
+                    break;
                 case "btnMinus":
+                    break;
                 case "btnMult":
+                    break;
                 case "btnDiv":
+                    break;
                 case "btnSqrt":
+                    break;
                 case "btnPerc":
+
+                    break;
                 case "btnDecimal":
+                    break;
                 case "btnSign":
+                    break;
                 case "btnClear":
+                    break;
                 case "btnEqual":
+                    break;
             }
 
         }
