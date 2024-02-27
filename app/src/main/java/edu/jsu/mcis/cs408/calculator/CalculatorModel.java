@@ -17,6 +17,7 @@ public class CalculatorModel extends AbstractModel {
     private String operator;
     private String digit;
     private CalculatorState state;
+    private final String DEFAULT_DIGIT = "0";
 
     /*
      * Initialize the model elements to known default values.  We use the setter
@@ -27,33 +28,12 @@ public class CalculatorModel extends AbstractModel {
 
     public void initDefault() {
         state = CalculatorState.CLEAR;
-        digit = "0";
+        digit = DEFAULT_DIGIT;
 
         leftOperand = new StringBuilder();
         rightOperand = new StringBuilder();
 
     }
-
-    /*
-     * Simple getter methods for text1 and text2
-     */
-//
-//    public String getLeftOperand() {
-//        return leftOperand;
-//    }
-//
-//    public String getRightOperand() {
-//        return rightOperand;
-//    }
-
-    /*
-     * Setters for text1 and text2.  Notice that, in addition to changing the
-     * values, these methods announce the change to the controller by firing a
-     * PropertyChange event.  Any registered AbstractController subclasses will
-     * receive this event, and will propagate it to all registered Views so that
-     * they can update themselves accordingly.
-     */
-
 
     public void setNewDigit(String newDigit){
 
@@ -78,28 +58,44 @@ public class CalculatorModel extends AbstractModel {
     }
 
     public void setOperator(String newOperator){
-        if (state.equals(CalculatorState.LHS)){
+        if (state.equals(CalculatorState.LHS) || state.equals(CalculatorState.OP_SELECTED) || state.equals(CalculatorState.RESULT)){
             operator = newOperator;
             state = CalculatorState.OP_SELECTED;
-            this.digit = "0";
+            this.digit = DEFAULT_DIGIT;
 
             firePropertyChange(CalculatorController.ELEMENT_OPERATOR, null, operator);
+        }
+        else if (state.equals(CalculatorState.RHS)){
+            operator = newOperator;
+            state = CalculatorState.RESULT;
+            setResult(rightOperand.toString());
         }
 
     }
 
-    public void setValue(String value){
+    public void setResult(String value){
         int operand1 = Integer.parseInt(leftOperand.toString());
         int operand2 = Integer.parseInt(rightOperand.toString());
+        int result;
 
-        int result = operand1 + operand2;
 
-        firePropertyChange(CalculatorController.ELEMENT_VALUE, null, result);
+        switch (operator) {
+
+            case "-":
+                result = operand1 - operand2;
+                break;
+            default:
+                result = operand1 + operand2;
+                break;
+        }
+        firePropertyChange(CalculatorController.ELEMENT_RESULT, null, result);
+        state = CalculatorState.RESULT;
+        leftOperand = new StringBuilder(String.valueOf(result));
     }
 
     public void setClear(String clear){
         state = CalculatorState.CLEAR;
-        this.digit = "0";
+        this.digit = DEFAULT_DIGIT;
         firePropertyChange(CalculatorController.ELEMENT_CLEAR, null, clear);
     }
 

@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
             }
 
         }
-        else if ( propertyName.equals(CalculatorController.ELEMENT_VALUE) ) {
+        else if ( propertyName.equals(CalculatorController.ELEMENT_RESULT) ) {
             String oldPropertyValue = display.getText().toString();
 
             if (!oldPropertyValue.equals(propertyValue)){
@@ -116,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
             }
 
         }
-
     }
 
     class CalculatorClickHandler implements View.OnClickListener {
@@ -136,54 +135,26 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
 
             switch(tag){
                 case "1":
-                    controller.appendNewDigit(tag);
-                    break;
                 case "2":
-                    controller.appendNewDigit(tag);
-                    break;
-                case "3":
-                    controller.appendNewDigit(tag);
-                    break;
-                case "4":
-                    controller.appendNewDigit(tag);
-                    break;
-                case "5":
-                    controller.appendNewDigit(tag);
-                    break;
-                case "6":
-                    controller.appendNewDigit(tag);
-                    break;
-                case "7":
-                    controller.appendNewDigit(tag);
-                    break;
-                case "8":
-                    controller.appendNewDigit(tag);
-                    break;
-                case "9":
-                    controller.appendNewDigit(tag);
-                    break;
                 case "0":
+                case "3":
+                case "4":
+                case "5":
+                case "6":
+                case "7":
+                case "8":
+                case "9":
+                case ".":
                     controller.appendNewDigit(tag);
                     break;
                 case "+":
-                    controller.useOperator(tag);
-                    break;
                 case "-":
-                    controller.useOperator(tag);
-                    break;
                 case "\u00D7":
-                    controller.useOperator(tag);
-                    break;
                 case "\u00F7":
-                    controller.useOperator(tag);
-                    break;
                 case "\u221A":
                     controller.useOperator(tag);
                     break;
                 case "%":
-                    break;
-                case ".":
-                    controller.appendNewDigit(tag);
                     break;
                 case "\u00B1":
                     break;

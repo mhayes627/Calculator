@@ -12,7 +12,7 @@ public class CalculatorController extends AbstractController{
 
     public static final String ELEMENT_NEW_DIGIT = "NewDigit";
     public static final String ELEMENT_OPERATOR = "Operator";
-    public static final String ELEMENT_VALUE = "Value";
+    public static final String ELEMENT_RESULT = "RESULT";
     public static final String ELEMENT_CLEAR = "Clear";
 
     /*
@@ -28,7 +28,7 @@ public class CalculatorController extends AbstractController{
 
     public void useOperator(String newOperator) { setModelProperty(ELEMENT_OPERATOR, newOperator); }
 
-    public void calculate(String value){ setModelProperty(ELEMENT_VALUE, value);}
+    public void calculate(String result){ setModelProperty(ELEMENT_RESULT, result);}
 
     public void clear(String clear) { setModelProperty(ELEMENT_CLEAR, clear);}
 }
