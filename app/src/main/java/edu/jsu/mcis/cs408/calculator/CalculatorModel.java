@@ -95,7 +95,12 @@ public class CalculatorModel extends AbstractModel {
         int result = operand1 + operand2;
 
         firePropertyChange(CalculatorController.ELEMENT_VALUE, null, result);
+    }
+
+    public void setClear(String clear){
         state = CalculatorState.CLEAR;
+        this.digit = "0";
+        firePropertyChange(CalculatorController.ELEMENT_CLEAR, null, clear);
     }
 
 }

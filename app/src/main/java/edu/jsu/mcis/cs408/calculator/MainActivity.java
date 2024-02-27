@@ -108,6 +108,14 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
             }
 
         }
+        else if ( propertyName.equals(CalculatorController.ELEMENT_CLEAR) ) {
+            String oldPropertyValue = display.getText().toString();
+
+            if (!oldPropertyValue.equals(propertyValue)){
+                display.setText(propertyValue);
+            }
+
+        }
 
     }
 
@@ -180,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
                 case "\u00B1":
                     break;
                 case "C":
+                    controller.clear(getResources().getString(R.string.display_text));
                     break;
                 case "=":
                     controller.calculate(tag);
