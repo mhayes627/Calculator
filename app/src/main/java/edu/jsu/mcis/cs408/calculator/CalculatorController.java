@@ -12,7 +12,7 @@ public class CalculatorController extends AbstractController{
 
     public static final String ELEMENT_NEW_DIGIT = "NewDigit";
     public static final String ELEMENT_OPERATOR = "Operator";
-    public static final String ELEMENT_RESULT = "RESULT";
+    public static final String ELEMENT_RESULT = "Result";
     public static final String ELEMENT_CLEAR = "Clear";
 
     /*

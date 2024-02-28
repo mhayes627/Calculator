@@ -2,6 +2,9 @@ package edu.jsu.mcis.cs408.calculator;
 
 import android.util.Log;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class CalculatorModel extends AbstractModel {
 
     public static final String TAG = "CalculatorModel";
@@ -30,9 +33,8 @@ public class CalculatorModel extends AbstractModel {
         state = CalculatorState.CLEAR;
         digit = DEFAULT_DIGIT;
 
-        leftOperand = new StringBuilder();
-        rightOperand = new StringBuilder();
-
+        leftOperand = new StringBuilder(DEFAULT_DIGIT);
+        rightOperand = new StringBuilder(DEFAULT_DIGIT);
     }
 
     public void setNewDigit(String newDigit){
@@ -44,15 +46,24 @@ public class CalculatorModel extends AbstractModel {
             leftOperand = new StringBuilder(oldDigit);
             leftOperand.append(newDigit);
 
-            this.digit = Integer.valueOf(leftOperand.toString()).toString();
+            if (leftOperand.charAt(0) == '0' && leftOperand.charAt(1) != '.'){
+                leftOperand.deleteCharAt(0);
+            }
+
+            this.digit = leftOperand.toString();
         }
         else if (state.equals(CalculatorState.OP_SELECTED) || state.equals(CalculatorState.RHS)){
             state = CalculatorState.RHS;
             rightOperand = new StringBuilder(oldDigit);
             rightOperand.append(newDigit);
 
-            this.digit = Integer.valueOf(rightOperand.toString()).toString();
+            if (rightOperand.charAt(0) == '0' && rightOperand.charAt(1) != '.'){
+                rightOperand.deleteCharAt(0);
+            }
+
+            this.digit = rightOperand.toString();
         }
+
 
         firePropertyChange(CalculatorController.ELEMENT_NEW_DIGIT, oldDigit, this.digit);
     }
@@ -71,26 +82,54 @@ public class CalculatorModel extends AbstractModel {
             setResult(rightOperand.toString());
         }
 
+        if (operator.equals("\u221A")){
+            setResult(leftOperand.toString());
+        }
     }
 
     public void setResult(String value){
-        int operand1 = Integer.parseInt(leftOperand.toString());
-        int operand2 = Integer.parseInt(rightOperand.toString());
-        int result;
-
+        BigDecimal operand1 = new BigDecimal(leftOperand.toString());
+        BigDecimal operand2 = new BigDecimal(rightOperand.toString());
+        BigDecimal result = new BigDecimal(DEFAULT_DIGIT);
 
         switch (operator) {
 
             case "-":
-                result = operand1 - operand2;
+                result = operand1.subtract(operand2);
                 break;
+            case "\u00D7":
+                result = operand1.multiply(operand2);
+                break;
+            case "\u00F7":
+                result = operand1.divide(operand2, 5, 0);
+                break;
+            case "\u221A":
+                if (state.equals(CalculatorState.OP_SELECTED) ){
+                    result = BigDecimal.valueOf(Math.sqrt(operand1.doubleValue()));
+                }
+                else if (state.equals(CalculatorState.RESULT)){
+                    result = BigDecimal.valueOf(Math.sqrt(operand2.doubleValue()));
+                }
+                break;
+//            case "%":
+//                break;
+//            case "\u00B1":
+//
+//                break;
             default:
-                result = operand1 + operand2;
+                result = operand1.add(operand2);
                 break;
         }
-        firePropertyChange(CalculatorController.ELEMENT_RESULT, null, result);
+
+        if (result.remainder(new BigDecimal(1)).equals(BigDecimal.valueOf(0.0))){
+            firePropertyChange(CalculatorController.ELEMENT_RESULT, null, result.intValue());
+        }
+        else{
+            firePropertyChange(CalculatorController.ELEMENT_RESULT, null, result);
+        }
+
         state = CalculatorState.RESULT;
-        leftOperand = new StringBuilder(String.valueOf(result));
+        leftOperand = new StringBuilder(result.toString());
     }
 
     public void setClear(String clear){

@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
         display.setTag(getResources().getString(R.string.display_tag));
         display.setGravity(Gravity.CENTER_VERTICAL | Gravity.END);
         display.setText(getResources().getString(R.string.display_text));
-        display.setTextSize(48);
+        display.setTextSize(60);
 
         layout.addView(display);
 
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
                 button.setId(id);
                 button.setTag(getResources().getStringArray(R.array.button_text)[index]);
                 button.setText(getResources().getStringArray(R.array.button_text)[index]);
-                button.setTextSize(24);
+                button.setTextSize(36);
 
                 layout.addView(button);
 
