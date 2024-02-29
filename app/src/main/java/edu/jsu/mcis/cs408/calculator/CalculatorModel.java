@@ -1,9 +1,6 @@
 package edu.jsu.mcis.cs408.calculator;
 
-import android.util.Log;
-
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 public class CalculatorModel extends AbstractModel {
 
@@ -64,7 +61,6 @@ public class CalculatorModel extends AbstractModel {
             this.digit = rightOperand.toString();
         }
 
-
         firePropertyChange(CalculatorController.ELEMENT_NEW_DIGIT, oldDigit, this.digit);
     }
 
@@ -83,6 +79,9 @@ public class CalculatorModel extends AbstractModel {
         }
 
         if (operator.equals("\u221A")){
+            setResult(leftOperand.toString());
+        }
+        else if (operator.equals("\u00B1")){
             setResult(leftOperand.toString());
         }
     }
@@ -111,11 +110,12 @@ public class CalculatorModel extends AbstractModel {
                     result = BigDecimal.valueOf(Math.sqrt(operand2.doubleValue()));
                 }
                 break;
-//            case "%":
-//                break;
-//            case "\u00B1":
-//
-//                break;
+            case "%":
+                result = operand1.divide(new BigDecimal(100));
+                break;
+            case "\u00B1":
+                result = operand1.multiply(new BigDecimal(-1));
+                break;
             default:
                 result = operand1.add(operand2);
                 break;

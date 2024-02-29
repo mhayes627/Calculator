@@ -81,41 +81,12 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
         String propertyName = evt.getPropertyName();
         String propertyValue = evt.getNewValue().toString();
 
-        Log.i(TAG, "New " + propertyName + " Value from Model: " + propertyValue);
+        String oldPropertyValue = display.getText().toString();
 
-        if ( propertyName.equals(CalculatorController.ELEMENT_NEW_DIGIT) ) {
-
-            String oldPropertyValue = display.getText().toString();
-
-            if (!oldPropertyValue.equals(propertyValue)){
-                display.setText(propertyValue);
-            }
-
+        if (!oldPropertyValue.equals(propertyValue)){
+            display.setText(propertyValue);
         }
-        else if ( propertyName.equals(CalculatorController.ELEMENT_OPERATOR) ) {
-            String oldPropertyValue = display.getText().toString();
 
-            if (!oldPropertyValue.equals(propertyValue)){
-                display.setText(propertyValue);
-            }
-
-        }
-        else if ( propertyName.equals(CalculatorController.ELEMENT_RESULT) ) {
-            String oldPropertyValue = display.getText().toString();
-
-            if (!oldPropertyValue.equals(propertyValue)){
-                display.setText(propertyValue);
-            }
-
-        }
-        else if ( propertyName.equals(CalculatorController.ELEMENT_CLEAR) ) {
-            String oldPropertyValue = display.getText().toString();
-
-            if (!oldPropertyValue.equals(propertyValue)){
-                display.setText(propertyValue);
-            }
-
-        }
     }
 
     class CalculatorClickHandler implements View.OnClickListener {
@@ -152,11 +123,9 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
                 case "\u00D7":
                 case "\u00F7":
                 case "\u221A":
-                    controller.useOperator(tag);
-                    break;
                 case "%":
-                    break;
                 case "\u00B1":
+                    controller.useOperator(tag);
                     break;
                 case "C":
                     controller.clear(getResources().getString(R.string.display_text));
