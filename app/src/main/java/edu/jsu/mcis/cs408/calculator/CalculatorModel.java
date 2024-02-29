@@ -41,7 +41,10 @@ public class CalculatorModel extends AbstractModel {
         if (state.equals(CalculatorState.CLEAR) || state.equals(CalculatorState.LHS)){
             state = CalculatorState.LHS;
             leftOperand = new StringBuilder(oldDigit);
-            leftOperand.append(newDigit);
+
+            if (leftOperand.length() < 11) {
+                leftOperand.append(newDigit);
+            }
 
             if (leftOperand.charAt(0) == '0' && leftOperand.charAt(1) != '.'){
                 leftOperand.deleteCharAt(0);
@@ -49,10 +52,13 @@ public class CalculatorModel extends AbstractModel {
 
             this.digit = leftOperand.toString();
         }
-        else if (state.equals(CalculatorState.OP_SELECTED) || state.equals(CalculatorState.RHS)){
+        else if (state.equals(CalculatorState.OP_SELECTED) || state.equals(CalculatorState.RHS) || state.equals(CalculatorState.RESULT)){
             state = CalculatorState.RHS;
             rightOperand = new StringBuilder(oldDigit);
-            rightOperand.append(newDigit);
+
+            if (rightOperand.length() < 11){
+                rightOperand.append(newDigit);
+            }
 
             if (rightOperand.charAt(0) == '0' && rightOperand.charAt(1) != '.'){
                 rightOperand.deleteCharAt(0);
@@ -74,15 +80,14 @@ public class CalculatorModel extends AbstractModel {
         }
         else if (state.equals(CalculatorState.RHS)){
             operator = newOperator;
-            state = CalculatorState.RESULT;
-            setResult(rightOperand.toString());
+            setResult(operator);
         }
 
         if (operator.equals("\u221A")){
-            setResult(leftOperand.toString());
+            setResult(operator);
         }
         else if (operator.equals("\u00B1")){
-            setResult(leftOperand.toString());
+            setResult(operator);
         }
     }
 
@@ -93,6 +98,9 @@ public class CalculatorModel extends AbstractModel {
 
         switch (operator) {
 
+            case "+":
+                result = operand1.add(operand2);
+                break;
             case "-":
                 result = operand1.subtract(operand2);
                 break;
@@ -114,11 +122,9 @@ public class CalculatorModel extends AbstractModel {
                 result = operand1.divide(new BigDecimal(100));
                 break;
             case "\u00B1":
-                result = operand1.multiply(new BigDecimal(-1));
+                result = operand1.negate();
                 break;
-            default:
-                result = operand1.add(operand2);
-                break;
+
         }
 
         if (result.remainder(new BigDecimal(1)).equals(BigDecimal.valueOf(0.0))){
@@ -129,6 +135,7 @@ public class CalculatorModel extends AbstractModel {
         }
 
         state = CalculatorState.RESULT;
+        this.digit = DEFAULT_DIGIT;
         leftOperand = new StringBuilder(result.toString());
     }
 
