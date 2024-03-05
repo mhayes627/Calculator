@@ -5,13 +5,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.beans.PropertyChangeEvent;
 
@@ -78,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
          * was changed and updates the View accordingly.
          */
 
-        String propertyName = evt.getPropertyName();
         String propertyValue = evt.getNewValue().toString();
 
         String oldPropertyValue = display.getText().toString();

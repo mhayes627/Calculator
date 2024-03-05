@@ -1,6 +1,7 @@
 package edu.jsu.mcis.cs408.calculator;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class CalculatorModel extends AbstractModel {
 
@@ -19,7 +20,7 @@ public class CalculatorModel extends AbstractModel {
     private CalculatorState state;
     private final String DEFAULT_DIGIT = "0";
     private final String ERROR_MESSAGE = "ERROR";
-    private final int MAX_DIGIT = 12;
+    private final int MAX_DIGIT = 10;
 
     /*
      * Initialize the model elements to known default values.  We use the setter
@@ -68,6 +69,7 @@ public class CalculatorModel extends AbstractModel {
 
             if (rightOperand.charAt(0) == '0' && rightOperand.charAt(1) != '.') {
                 rightOperand.deleteCharAt(0);
+                firePropertyChange(CalculatorController.ELEMENT_NEW_DIGIT, oldDigit, rightOperand);
             }
 
             this.digit = rightOperand.toString();
@@ -108,10 +110,15 @@ public class CalculatorModel extends AbstractModel {
                 break;
             case "\u00F7":
                 try {
-                    result = operand1.divide(operand2, MAX_DIGIT, 0);
+                    result = operand1.divide(operand2);
                 }
                 catch(ArithmeticException e){
-                    state = CalculatorState.ERROR;
+                    if (rightOperand.toString().equals("0")){
+                        state = CalculatorState.ERROR;
+                    }
+                    else{
+                        result = operand1.divide(operand2, MAX_DIGIT, RoundingMode.UP);
+                    }
                 }
                 break;
         }
