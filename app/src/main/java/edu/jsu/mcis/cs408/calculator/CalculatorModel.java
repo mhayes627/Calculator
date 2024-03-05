@@ -1,6 +1,10 @@
 package edu.jsu.mcis.cs408.calculator;
 
+import android.nfc.Tag;
+import android.util.Log;
+
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class CalculatorModel extends AbstractModel {
 
@@ -18,6 +22,8 @@ public class CalculatorModel extends AbstractModel {
     private String digit;
     private CalculatorState state;
     private final String DEFAULT_DIGIT = "0";
+    private final String ERROR_MESSAGE = "ERROR";
+    private final int MAX_DIGIT = 12;
 
     /*
      * Initialize the model elements to known default values.  We use the setter
@@ -42,11 +48,13 @@ public class CalculatorModel extends AbstractModel {
             state = CalculatorState.LHS;
             leftOperand = new StringBuilder(oldDigit);
 
-            if (leftOperand.length() < 11) {
-                leftOperand.append(newDigit);
+            if (leftOperand.length() < MAX_DIGIT) {
+                if (!newDigit.equals(".") || !leftOperand.toString().contains(newDigit)){
+                    leftOperand.append(newDigit);
+                }
             }
 
-            if (leftOperand.charAt(0) == '0' && leftOperand.charAt(1) != '.'){
+            if (leftOperand.charAt(0) == '0' && leftOperand.charAt(1) != '.') {
                 leftOperand.deleteCharAt(0);
             }
 
@@ -54,13 +62,15 @@ public class CalculatorModel extends AbstractModel {
         }
         else if (state.equals(CalculatorState.OP_SELECTED) || state.equals(CalculatorState.RHS) || state.equals(CalculatorState.RESULT)){
             state = CalculatorState.RHS;
-            rightOperand = new StringBuilder(oldDigit);
+            rightOperand = new StringBuilder(DEFAULT_DIGIT);
 
-            if (rightOperand.length() < 11){
-                rightOperand.append(newDigit);
+            if (rightOperand.length() < MAX_DIGIT){
+                if (!newDigit.equals(".") || !rightOperand.toString().contains(newDigit)){
+                    rightOperand.append(newDigit);
+                }
             }
 
-            if (rightOperand.charAt(0) == '0' && rightOperand.charAt(1) != '.'){
+            if (rightOperand.charAt(0) == '0' && rightOperand.charAt(1) != '.') {
                 rightOperand.deleteCharAt(0);
             }
 
@@ -79,15 +89,8 @@ public class CalculatorModel extends AbstractModel {
             firePropertyChange(CalculatorController.ELEMENT_OPERATOR, null, operator);
         }
         else if (state.equals(CalculatorState.RHS)){
+            setResult(operator);
             operator = newOperator;
-            setResult(operator);
-        }
-
-        if (operator.equals("\u221A")){
-            setResult(operator);
-        }
-        else if (operator.equals("\u00B1")){
-            setResult(operator);
         }
     }
 
@@ -108,41 +111,92 @@ public class CalculatorModel extends AbstractModel {
                 result = operand1.multiply(operand2);
                 break;
             case "\u00F7":
-                result = operand1.divide(operand2, 5, 0);
-                break;
-            case "\u221A":
-                if (state.equals(CalculatorState.OP_SELECTED) ){
-                    result = BigDecimal.valueOf(Math.sqrt(operand1.doubleValue()));
+                try {
+                    result = operand1.divide(operand2, MAX_DIGIT, 0);
                 }
-                else if (state.equals(CalculatorState.RESULT)){
-                    result = BigDecimal.valueOf(Math.sqrt(operand2.doubleValue()));
+                catch(ArithmeticException e){
+                    state = CalculatorState.ERROR;
                 }
                 break;
-            case "%":
-                result = operand1.divide(new BigDecimal(100));
-                break;
-            case "\u00B1":
-                result = operand1.negate();
-                break;
-
         }
 
-        if (result.remainder(new BigDecimal(1)).equals(BigDecimal.valueOf(0.0))){
-            firePropertyChange(CalculatorController.ELEMENT_RESULT, null, result.intValue());
+        if (state.equals(CalculatorState.ERROR)){
+            firePropertyChange(CalculatorController.ELEMENT_RESULT, null, ERROR_MESSAGE);
         }
         else{
-            firePropertyChange(CalculatorController.ELEMENT_RESULT, null, result);
+            double db = result.doubleValue();
+            if (db % 1 == 0){
+                firePropertyChange(CalculatorController.ELEMENT_RESULT, null, result.intValue());
+            }
+            else{
+                firePropertyChange(CalculatorController.ELEMENT_RESULT, null, result);
+            }
+
+            state = CalculatorState.RESULT;
+            this.digit = DEFAULT_DIGIT;
+            leftOperand = new StringBuilder(result.toString());
         }
 
-        state = CalculatorState.RESULT;
-        this.digit = DEFAULT_DIGIT;
-        leftOperand = new StringBuilder(result.toString());
+    }
+
+    public void setPercent(String percent){
+        if (state.equals(CalculatorState.LHS)){
+            firePropertyChange(CalculatorController.ELEMENT_PERCENT, null, DEFAULT_DIGIT);
+        }
+        else if (state.equals(CalculatorState.RHS)){
+            BigDecimal operand1 = new BigDecimal(leftOperand.toString());
+            BigDecimal operand2 = new BigDecimal(rightOperand.toString());
+            BigDecimal result;
+
+            operand2 = operand2.divide(new BigDecimal(100));
+            result = operand1.multiply(operand2);
+
+            rightOperand = new StringBuilder(result.toString());
+            firePropertyChange(CalculatorController.ELEMENT_PERCENT, null, rightOperand);
+        }
+    }
+
+    public void setSquareRoot(String value){
+        if (state.equals(CalculatorState.LHS)){
+            leftOperand = sqrt(leftOperand.toString());
+            firePropertyChange(CalculatorController.ELEMENT_SQUARE, null, leftOperand);
+        }
+        else if (state.equals(CalculatorState.RHS)){
+            rightOperand = sqrt(rightOperand.toString());
+            firePropertyChange(CalculatorController.ELEMENT_SQUARE, null, rightOperand);
+        }
+    }
+
+    public void setSign(String value){
+        if (state.equals(CalculatorState.LHS)){
+            leftOperand = negate(leftOperand.toString());
+            firePropertyChange(CalculatorController.ELEMENT_SIGN, null, leftOperand);
+        }
+        else if (state.equals(CalculatorState.RHS)){
+            rightOperand = negate(rightOperand.toString());
+            firePropertyChange(CalculatorController.ELEMENT_SIGN, null, rightOperand);
+        }
     }
 
     public void setClear(String clear){
         state = CalculatorState.CLEAR;
         this.digit = DEFAULT_DIGIT;
         firePropertyChange(CalculatorController.ELEMENT_CLEAR, null, clear);
+    }
+
+    private StringBuilder sqrt(String operand){
+
+        Double db = Math.sqrt(Double.parseDouble(operand));
+        operand = db.toString();
+
+        return new StringBuilder(operand);
+    }
+
+    private StringBuilder negate(String operand){
+        BigDecimal result = new BigDecimal(operand);
+        result = result.negate();
+
+        return new StringBuilder(result.toString());
     }
 
 }

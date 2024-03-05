@@ -93,16 +93,11 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
 
         @Override
         public void onClick(View v) {
-
-            String tag = v.getTag().toString();
-            Toast toast = Toast.makeText(binding.getRoot().getContext(), tag, Toast.LENGTH_SHORT);
-            toast.show();
-
             /*
              * When the "Change" buttons are clicked, inform the controller of an input field
              * change, so that the Model(s) can be updated accordingly.
              */
-            tag = ((Button) v).getTag().toString();
+            String tag = ((Button) v).getTag().toString();
 
             switch(tag){
                 case "1":
@@ -122,10 +117,16 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
                 case "-":
                 case "\u00D7":
                 case "\u00F7":
-                case "\u221A":
-                case "%":
-                case "\u00B1":
                     controller.useOperator(tag);
+                    break;
+                case "\u00B1":
+                    controller.changeSign(tag);
+                    break;
+                case "\u221A":
+                    controller.sqrt(tag);
+                    break;
+                case "%":
+                    controller.percent(tag);
                     break;
                 case "C":
                     controller.clear(getResources().getString(R.string.display_text));

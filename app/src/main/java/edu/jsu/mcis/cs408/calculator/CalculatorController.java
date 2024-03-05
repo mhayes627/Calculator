@@ -13,6 +13,9 @@ public class CalculatorController extends AbstractController{
     public static final String ELEMENT_NEW_DIGIT = "NewDigit";
     public static final String ELEMENT_OPERATOR = "Operator";
     public static final String ELEMENT_RESULT = "Result";
+    public static final String ELEMENT_PERCENT = "Percent";
+    public static final String ELEMENT_SQUARE = "SquareRoot";
+    public static final String ELEMENT_SIGN = "Sign";
     public static final String ELEMENT_CLEAR = "Clear";
 
     /*
@@ -28,7 +31,15 @@ public class CalculatorController extends AbstractController{
 
     public void useOperator(String newOperator) { setModelProperty(ELEMENT_OPERATOR, newOperator); }
 
-    public void calculate(String result){ setModelProperty(ELEMENT_RESULT, result);}
+    public void calculate(String result){
+        setModelProperty(ELEMENT_RESULT, result);
+    }
+
+    public void percent(String percent) { setModelProperty(ELEMENT_PERCENT, percent); }
+
+    public void sqrt(String value) { setModelProperty(ELEMENT_SQUARE, value);}
+
+    public void changeSign(String value) { setModelProperty(ELEMENT_SIGN, value);}
 
     public void clear(String clear) { setModelProperty(ELEMENT_CLEAR, clear);}
 }
