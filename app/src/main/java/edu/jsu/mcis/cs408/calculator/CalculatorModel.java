@@ -1,10 +1,6 @@
 package edu.jsu.mcis.cs408.calculator;
 
-import android.nfc.Tag;
-import android.util.Log;
-
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 public class CalculatorModel extends AbstractModel {
 
@@ -62,7 +58,7 @@ public class CalculatorModel extends AbstractModel {
         }
         else if (state.equals(CalculatorState.OP_SELECTED) || state.equals(CalculatorState.RHS) || state.equals(CalculatorState.RESULT)){
             state = CalculatorState.RHS;
-            rightOperand = new StringBuilder(DEFAULT_DIGIT);
+            rightOperand = new StringBuilder(oldDigit);
 
             if (rightOperand.length() < MAX_DIGIT){
                 if (!newDigit.equals(".") || !rightOperand.toString().contains(newDigit)){
@@ -187,7 +183,14 @@ public class CalculatorModel extends AbstractModel {
     private StringBuilder sqrt(String operand){
 
         Double db = Math.sqrt(Double.parseDouble(operand));
-        operand = db.toString();
+
+        if (db % 1 == 0){
+            operand = String.valueOf(db.intValue());
+        }
+        else{
+            BigDecimal format = new BigDecimal(db);
+            operand = format.setScale(MAX_DIGIT, 0).toString();
+        }
 
         return new StringBuilder(operand);
     }
